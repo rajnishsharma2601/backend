@@ -1,6 +1,5 @@
 import crypto from "crypto";
-// import AppError from ".././utils/AppError.js";
-import AppError from "../utils/appError.js";
+import AppError from '../utils/AppError.js';
 import asyncHandler from "../middlewares/asyncHandler.middleware.js";
 import User from "../models/user.model.js";
 import { razorpay } from "../server.js";
@@ -116,6 +115,7 @@ export const cancelSubscription = asyncHandler(async (req, res, next) => {
 
   // Creating a subscription using razorpay that we imported from the server
   try {
+
     const subscription = await razorpay.subscriptions.cancel(
       subscriptionId // subscription id
     );
