@@ -26,6 +26,10 @@ app.get("/ping", (_req, res) => {
   res.send("Pong");
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 // Import all routes
 import userRoutes from "./routes/user.routes.js";
 import courseRoutes from "./routes/course.routes.js";
