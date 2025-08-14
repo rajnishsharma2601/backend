@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import AppError from '../utils/AppError.js';
+import AppError from "../utils/AppError.js";
 import asyncHandler from "../middlewares/asyncHandler.middleware.js";
 import User from "../models/user.model.js";
 import { razorpay } from "../server.js";
@@ -15,7 +15,7 @@ export const buySubscription = asyncHandler(async (req, res, next) => {
   const { id } = req.user;
 
   // Finding the user based on the ID
-  const user = await User.findById(id);
+  const user = await User.findById(req.user.id);
 
   if (!user) {
     return next(new AppError("Unauthorized, please login"));
@@ -63,6 +63,10 @@ export const verifySubscription = asyncHandler(async (req, res, next) => {
   // Getting the subscription ID from the user object
   const subscriptionId = user.subscription.id;
 
+  // Generating a signature with SHA256 for verification purposes
+  // Here the subscriptionId should be the one which we saved in the DB
+  // razorpay_payment_id is from the frontend and there should be a '|' character between this and subscriptionId
+  // At the end convert it to Hex value
   const generatedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_SECRET)
     .update(`${razorpay_payment_id}|${subscriptionId}`)
@@ -115,7 +119,6 @@ export const cancelSubscription = asyncHandler(async (req, res, next) => {
 
   // Creating a subscription using razorpay that we imported from the server
   try {
-
     const subscription = await razorpay.subscriptions.cancel(
       subscriptionId // subscription id
     );

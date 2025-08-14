@@ -1,5 +1,3 @@
-import AppError from "../utils/AppError.js";
-
 import crypto from "crypto";
 import fs from "fs/promises";
 import cloudinary from "cloudinary";
@@ -27,7 +25,7 @@ export const registerUser = asyncHandler(async (req, res, next) => {
     return next(new AppError("All fields are required", 400));
   }
 
-  // Check if the user exists with the provided email
+  // Check if the user exists with the provEided email
   const userExists = await User.findOne({ email });
 
   // If user exists send the reponse
@@ -185,57 +183,6 @@ export const getLoggedInUserDetails = asyncHandler(async (req, res, _next) => {
  * @ACCESS Public
  */
 
-// export const forgotPassword = asyncHandler(async (req, res, next) => {
-//   const { email } = req.body;
-
-//   console.log("📩 Forgot password request received:", email);
-
-//   if (!email) return next(new AppError("Email is required", 400));
-
-//   const user = await User.findOne({ email });
-//   console.log("Email in body:", req.body);
-//   if (!user) return next(new AppError("Email not registered", 400));
-
-//   const resetToken = user.generatePasswordResetToken();
-//   if (!resetToken) return next(new AppError("Could not generate token", 500));
-
-//   await user.save({ validateBeforeSave: false });
-
-//   // const resetPasswordUrl = `${
-//   //   process.env.FRONTEND_URL || "http://localhost:5173"
-//   // }/reset-password/${resetToken}`;
-//   //  console.log( resetPasswordUrl);
-
-//      const resetPasswordUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-//      console.log(resetPasswordUrl);
-
-//   const subject = "Reset Password";
-//   const message = `
-//     <p>You can reset your password by clicking this link:</p>
-//     <a href="${resetPasswordUrl}" target="_blank">Reset your password</a>
-//     <p>If the above link doesn’t work, copy and paste this URL into your browser:</p>
-//     <p>${resetPasswordUrl}</p>
-//     <br />
-//     <p>If you did not request a password reset, please ignore this email.</p>
-//   `;
-
-//   try {
-//     await sendEmail(email, subject, message);
-//     res.status(200).json({
-//       success: true,
-//       message: `Reset password token has been sent to ${email} successfully`,
-//     });
-//   } catch (error) {
-//     console.error("❌ Email sending failed:", error.message);
-
-//     user.forgotPasswordToken = undefined;
-//     user.forgotPasswordExpiry = undefined;
-//     await user.save({ validateBeforeSave: false });
-
-//     return next(new AppError("Failed to send email. Try again later.", 500));
-//   }
-// });
-
 export const forgotPassword = asyncHandler(async (req, res, next) => {
   // Extracting email from request body
   const { email } = req.body;
@@ -268,7 +215,7 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
   // const resetPasswordUrl = `${req.protocol}://${req.get(
   //   "host"
   // )}/api/v1/user/reset/${resetToken}`;
-  const resetPasswordUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+  const resetPasswordUrl = `${process.env.FRONTEND_URL}/reset/${resetToken}`;
   console.log(resetPasswordUrl);
 
   // We here need to send an email to the user with the token
